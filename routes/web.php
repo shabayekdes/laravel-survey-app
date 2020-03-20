@@ -22,3 +22,6 @@ Auth::routes();
 Route::get('/home', 'HomeController@index')->name('home');
 
 Route::resource('questionnaire', 'QuestionnaireController');
+
+Route::get('/questionnaires/{questionnaire}/questions/create', 'QuestionController@create');
+Route::post('/questionnaires/{questionnaire}/questions', 'QuestionController@store');
