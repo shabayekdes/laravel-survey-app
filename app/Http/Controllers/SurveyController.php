@@ -2,19 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Survey;
 use Illuminate\Http\Request;
 use App\Models\Questionnaire;
 
-class QuestionnaireController extends Controller
+class SurveyController extends Controller
 {
-    /**
-     * Questionnaire Controller Construct
-     *
-     */
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
     /**
      * Display a listing of the resource.
      *
@@ -32,7 +25,7 @@ class QuestionnaireController extends Controller
      */
     public function create()
     {
-        return view('questionnaire.create');
+        //
     }
 
     /**
@@ -41,35 +34,36 @@ class QuestionnaireController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store()
+    public function store(Questionnaire $questionnaire)
     {
-        $questionnaire = auth()->user()->questionnaires()->create($this->validateRequest());
+        $data = $this->validateRequest();
 
-        return redirect()->route('questionnaire.show', [
-            'questionnaire' => $questionnaire->id
-        ]);
+        $survey = $questionnaire->surveys()->create($data['survey']);
+        $survey->responses()->createMany($data['responses']);
+
+        return 'Thank you!';
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  \App\Models\Survey  $survey
      * @return \Illuminate\Http\Response
      */
-    public function show(Questionnaire $questionnaire)
+    public function show(Questionnaire $questionnaire, $slug)
     {
         $questionnaire->load('questions.answers');
 
-        return view('questionnaire.show',compact('questionnaire'));
+        return view('survey.show', compact('questionnaire'));
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param  \App\Models\Survey  $survey
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Survey $survey)
     {
         //
     }
@@ -78,10 +72,10 @@ class QuestionnaireController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  \App\Models\Survey  $survey
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Survey $survey)
     {
         //
     }
@@ -89,10 +83,10 @@ class QuestionnaireController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  \App\Models\Survey  $survey
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Survey $survey)
     {
         //
     }
@@ -105,8 +99,10 @@ class QuestionnaireController extends Controller
     private function validateRequest()
     {
         return request()->validate([
-            'title' => 'required',
-            'purpose' => 'required'
+            'responses.*.answer_id' => 'required',
+            'responses.*.question_id' => 'required',
+            'survey.name' => 'required',
+            'survey.email' => 'required|email',
         ]);
     }
 }

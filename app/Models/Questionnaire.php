@@ -31,4 +31,13 @@ class Questionnaire extends Model
     {
         return $this->hasMany(Question::class);
     }
+
+    /**
+     * Get The surveys of questionnaire
+     *
+     */
+    public function surveys()
+    {
+        return $this->hasMany(Survey::class);
+    }
 }
