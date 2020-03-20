@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\User;
+use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
 
 class Questionnaire extends Model
@@ -14,6 +15,23 @@ class Questionnaire extends Model
      */
     protected $guarded = [];
 
+    /**
+     * Path to show questionnaire
+     *
+     */
+    public function path()
+    {
+        return url('/questionnaires/' . $this->id);
+    }
+
+    /**
+     * Public path of survey related to questionnaire
+     *
+     */
+    public function publicPath()
+    {
+        return url('/surveys/' . $this->id . '-' . Str::slug($this->title));
+    }
     /**
      * Get The user belongs to questionnaire
      *

@@ -30,4 +30,13 @@ class Question extends Model
     {
         return $this->hasMany(Answer::class);
     }
+    
+    /**
+     * Get The responses of answer
+     *
+     */
+    public function responses()
+    {
+        return $this->hasMany(SurveyResponse::class);
+    }
 }
