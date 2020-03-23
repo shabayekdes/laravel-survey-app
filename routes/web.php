@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\Survey;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -29,3 +31,14 @@ Route::delete('/questionnaires/{questionnaire}/questions/{question}', 'QuestionC
 
 Route::get('/surveys/{questionnaire}-{slug}', 'SurveyController@show');
 Route::post('/surveys/{questionnaire}-{slug}', 'SurveyController@store');
+Route::get('/thankyou', 'SurveyController@finishSurvey');
+
+Route::get('test', function () {
+
+    $survey = Survey::with('responses', 'questionnaire')->find(7);
+
+    dd($survey);
+
+    Mail::to('krunal@appdividend.com')->send(new App\Mail\SendSurveyResponseMail());
+    return 'done';
+});

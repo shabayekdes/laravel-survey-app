@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\SurveyRespond;
 use App\Models\Survey;
 use Illuminate\Http\Request;
 use App\Models\Questionnaire;
@@ -41,7 +42,9 @@ class SurveyController extends Controller
         $survey = $questionnaire->surveys()->create($data['survey']);
         $survey->responses()->createMany($data['responses']);
 
-        return 'Thank you!';
+        event(new SurveyRespond($survey));
+
+        return redirect('/thankyou');
     }
 
     /**
@@ -89,6 +92,11 @@ class SurveyController extends Controller
     public function destroy(Survey $survey)
     {
         //
+    }
+
+    public function finishSurvey()
+    {
+        return view('thankyou');
     }
 
     /**
